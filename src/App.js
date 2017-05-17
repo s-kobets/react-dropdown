@@ -1,21 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Select from 'react-select'
-import styled from 'styled-components';
-
-const options = [
-  { value: 'one', label: 'One' },
-  { value: 'two', label: 'Two' }
-];
-
-function logChange(val) {
-  console.log("Selected: " + val);
-}
-
-const menu = (props) => {
-  <div>bu</div>
-}
+import Dropdown from './components/dropdown'
 
 class App extends Component {
   render() {
@@ -28,14 +14,9 @@ class App extends Component {
           To get started, edit <code>src/App.js</code> and save to reload.
         </p>
 
-        <Select
-          name="form-field-name"
-          options={options}
-          onChange={logChange}
-          value="one"
-          multi={false}
-          searchable={false}
-          clearable={false}
+        <Dropdown
+          button={<span>Click Me</span>}
+          template={<span>Hello World</span>}
         />
       </div>
     );
