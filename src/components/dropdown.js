@@ -1,6 +1,20 @@
 import React from 'react';
-import {findDOMNode} from 'react-dom'
-import {PropTypes} from 'prop-types'
+import { findDOMNode } from 'react-dom'
+import { PropTypes } from 'prop-types'
+import styled from 'styled-components';
+
+const WrapperDropdown = styled.div`
+  position: relative;
+  display: inline-block;
+`
+
+const OverlayDropdown = styled.div`
+  position: absolute;
+  top: calc(100% + 5px)
+  left: 0;
+  display: inline-block;
+  box-shadow: 0 0 0 1px rgb(0, 0, 0)
+`
 
 class Dropdown extends React.PureComponent {
   constructor(props) {
@@ -11,14 +25,14 @@ class Dropdown extends React.PureComponent {
   }
 
   componentDidMount() {
-    document.body.addEventListener('click', this.handleClickOutside)
+    document.body.addEventListener('click', this.onClickOutside)
   }
 
   componentWillUnmount() {
-    document.body.removeEventListener('click', this.handleClickOutside)
+    document.body.removeEventListener('click', this.onClickOutside)
   }
 
-  handleClickOutside = (evt) => {
+  onClickOutside = (evt) => {
     const area = findDOMNode(this.area)
 
     if (!area || (area && !area.contains(evt.target))) {
@@ -28,34 +42,33 @@ class Dropdown extends React.PureComponent {
     }
   }
 
+  onClick = () => {
+    this.setState({ isOpen: !this.state.isOpen })
+  }
+
   render() {
     const { button, template } = this.props
     const { isOpen } = this.state
-    const dropdownButtonActive = React.cloneElement(button,
-      { 
-        onClick: () => { this.setState({ isOpen: !isOpen }) },
-        isClick: true,
-      },
-    )
+
     const dropdownButton = React.cloneElement(button,
       {
-        onClick: () => { this.setState({ isOpen: !isOpen }) },
-        isClick: false,
+        onClick: this.onClick,
+        isClick: isOpen,
       },
     )
 
     return (
-      <div
+      <WrapperDropdown
         ref={(name) => { this.area = name }}
       >
-        { isOpen ? dropdownButtonActive : dropdownButton }
+        { dropdownButton }
         {
           isOpen &&
-          <div>
+          <OverlayDropdown>
             {template}
-          </div>
+          </OverlayDropdown>
         }
-      </div>
+      </WrapperDropdown>
     )
   }
 }

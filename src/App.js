@@ -15,7 +15,7 @@ class App extends Component {
         </p>
 
         <Dropdown
-          button={<span>Click Me</span>}
+          button={<button>Click Me</button>}
           template={<span>Hello World</span>}
         />
       </div>
