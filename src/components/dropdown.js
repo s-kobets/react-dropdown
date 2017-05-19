@@ -1,5 +1,5 @@
 import React from 'react';
-import { findDOMNode } from 'react-dom'
+import onClickOutside from 'react-onclickoutside'
 import { PropTypes } from 'prop-types'
 import styled from 'styled-components';
 
@@ -16,29 +16,17 @@ const OverlayDropdown = styled.div`
   box-shadow: 0 0 0 1px rgb(0, 0, 0)
 `
 
+const ComponentOverlay = (props) => (
+  <OverlayDropdown>
+    {props.overlay}
+  </OverlayDropdown>
+)
+
 class Dropdown extends React.PureComponent {
   constructor(props) {
     super(props)
     this.state = {
       isOpen: false,
-    }
-  }
-
-  componentDidMount() {
-    document.body.addEventListener('click', this.onClickOutside)
-  }
-
-  componentWillUnmount() {
-    document.body.removeEventListener('click', this.onClickOutside)
-  }
-
-  onClickOutside = (evt) => {
-    const area = findDOMNode(this.area)
-
-    if (!area || (area && !area.contains(evt.target))) {
-      this.setState({
-        isOpen: false,
-      })
     }
   }
 
@@ -53,20 +41,22 @@ class Dropdown extends React.PureComponent {
     const dropdownButton = React.cloneElement(button,
       {
         onClick: this.onClick,
-        isClick: isOpen,
+        active: isOpen,
       },
     )
 
+    const Outside = onClickOutside(ComponentOverlay, {
+      handleClickOutside: () => this.onClick,
+    })
+
     return (
-      <WrapperDropdown
-        ref={(name) => { this.area = name }}
-      >
+      <WrapperDropdown>
         { dropdownButton }
-        {
-          isOpen &&
-          <OverlayDropdown>
-            {template}
-          </OverlayDropdown>
+        { isOpen &&
+          <Outside
+            eventTypes="click"
+            overlay={template}
+          />
         }
       </WrapperDropdown>
     )
